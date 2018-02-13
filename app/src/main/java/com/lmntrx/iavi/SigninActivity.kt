@@ -3,6 +3,7 @@ package com.lmntrx.iavi
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_sign_up_with_email.*
 import kotlinx.android.synthetic.main.activity_signin.*
 
 class SigninActivity : AppCompatActivity() {
@@ -32,6 +34,18 @@ class SigninActivity : AppCompatActivity() {
         signInWithGoogleButton.setOnClickListener(View.OnClickListener {
             signInWithGoogle(googleSignInClient)
         })
+
+        val signInWithEmailButton=signInWithEmailButton
+        signInWithEmailButton.setOnClickListener {
+            val email=signInEmailEditText.text.toString()
+            val password=signInPasswordEditText.text.toString()
+            signInWithEmail(email,password)
+        }
+
+        val signUpWithEmailTextView=signUpTextView
+        signUpWithEmailTextView.setOnClickListener {
+            startActivity(Intent(this,SignUpWithEmail::class.java))
+        }
     }
 
     fun signInWithGoogle(signInClient:GoogleSignInClient){
@@ -69,5 +83,18 @@ class SigninActivity : AppCompatActivity() {
                 Toast.makeText(this,"Authentication Failed",Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun signInWithEmail(email:String,password:String){
+        Toast.makeText(this,"Sign In With Email",Toast.LENGTH_SHORT).show()
+        //Log.d("DetailsCheck","Email : "+email+" Password : "+password)
+        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
+            if (it.isSuccessful){
+                startActivity(Intent(this,MainActivity::class.java))
+            }
+            else{
+                Toast.makeText(this,"Sign In Failed Please Check Your Credentials",Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
